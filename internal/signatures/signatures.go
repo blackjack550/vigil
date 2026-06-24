@@ -1,4 +1,4 @@
-package signatures
+﻿package signatures
 
 import (
 	"fmt"
@@ -14,13 +14,18 @@ type Signature struct {
 	Severity    format.RiskLevel
 	Formats     []format.FormatType
 	AffectedVer string
+	FixedVer    string
 	RefURL      string
+	RCE         bool
+	RCEScore    float64
 	Check       func(fi *format.FormatInfo) []format.Anomaly
 }
 
 var Signatures = []Signature{
 	{
 		CVE:         "CVE-2023-49528",
+		RCE:         true,
+		RCEScore:    7.5,
 		Title:       "Buffer overflow in libavformat/mov.c",
 		Description: "Buffer overflow in FFmpeg's MOV demuxer via crafted box size that wraps around, leading to undersized buffer allocation and subsequent heap overflow.",
 		Severity:    format.RiskHigh,
@@ -31,6 +36,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2022-3341",
+		RCE:         true,
+		RCEScore:    8.0,
 		Title:       "Buffer overflow in libavformat",
 		Description: "A buffer overflow vulnerability in FFmpeg's demuxer when processing malformed container format headers, allowing arbitrary code execution via crafted media files.",
 		Severity:    format.RiskHigh,
@@ -51,6 +58,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2020-22015",
+		RCE:         true,
+		RCEScore:    9.0,
 		Title:       "Heap buffer overflow in libavformat/movenc.c",
 		Description: "Heap buffer overflow in FFmpeg's MOV/MP4 muxer/demuxer when processing crafted stsz boxes with large sample sizes leading to integer overflow in buffer allocation.",
 		Severity:    format.RiskCritical,
@@ -81,6 +90,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2021-38114",
+		RCE:         true,
+		RCEScore:    8.5,
 		Title:       "Heap buffer overflow in libavcodec/dnxhddec.c",
 		Description: "Heap buffer overflow in DNxHD decoder when processing crafted extradata with oversized configuration payload.",
 		Severity:    format.RiskHigh,
@@ -101,6 +112,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2023-47342",
+		RCE:         true,
+		RCEScore:    8.0,
 		Title:       "Heap buffer overflow in libavcodec/exr.c",
 		Description: "Heap buffer overflow in OpenEXR decoder when processing crafted EXR data with invalid data window dimensions.",
 		Severity:    format.RiskHigh,
@@ -121,6 +134,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2020-22020",
+		RCE:         true,
+		RCEScore:    6.5,
 		Title:       "Buffer overflow in libavfilter/vf_framerate.c",
 		Description: "Buffer overflow in frame rate conversion filter when processing crafted video frames with extreme dimension ratios.",
 		Severity:    format.RiskMedium,
@@ -131,6 +146,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2026-40962",
+		RCE:         true,
+		RCEScore:    9.5,
 		Title:       "Integer overflow in libsvtav1 encoding (libavcodec)",
 		Description: "Integer overflow and resultant out-of-bounds write in FFmpeg before 8.1 during encoding with libsvtav1, triggered by crafted AV1 codec configuration parameters leading to undersized buffer allocation.",
 		Severity:    format.RiskCritical,
@@ -151,6 +168,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2026-12706",
+		RCE:         true,
+		RCEScore:    9.0,
 		Title:       "Use-after-free in RASC video decoder (libavcodec)",
 		Description: "Use-after-free vulnerability in FFmpeg's RASC (Raster) video decoder when processing crafted animation frames with invalid sequence references, allowing memory corruption and potential code execution.",
 		Severity:    format.RiskCritical,
@@ -161,6 +180,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2026-8461",
+		RCE:         true,
+		RCEScore:    9.0,
 		Title:       "OOB write in libavcodec",
 		Description: "Out-of-bounds write vulnerability in FFmpeg's libavcodec library when processing crafted media files with invalid sample buffer dimensions, leading to heap corruption.",
 		Severity:    format.RiskCritical,
@@ -181,6 +202,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2025-59729",
+		RCE:         true,
+		RCEScore:    8.0,
 		Title:       "Integer underflow in DHAV file header parsing (libavformat)",
 		Description: "When parsing the header for a DHAV file, an integer underflow occurs in size computation, leading to undersized buffer allocation and subsequent heap buffer overflow.",
 		Severity:    format.RiskHigh,
@@ -201,6 +224,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2025-59731",
+		RCE:         true,
+		RCEScore:    9.5,
 		Title:       "OOB write in OpenEXR DWAA/DWAB compression (libavcodec)",
 		Description: "When decoding an OpenEXR file that uses DWAA or DWAB compression, the rijndael buffer size is not initialized resulting in an out-of-bounds write on the stack.",
 		Severity:    format.RiskCritical,
@@ -211,6 +236,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2025-59734",
+		RCE:         true,
+		RCEScore:    9.0,
 		Title:       "Use-after-free in SANM decoding (libavcodec)",
 		Description: "It is possible to cause a use-after-free write in SANM decoding with a crafted ANIM file due to improper frame reference counting in the animation decoder.",
 		Severity:    format.RiskCritical,
@@ -221,6 +248,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2025-63757",
+		RCE:         true,
+		RCEScore:    7.5,
 		Title:       "Integer overflow in yuv2ya16 pixel conversion (libswscale)",
 		Description: "Integer overflow vulnerability in the yuv2ya16_X_c_template function in libswscale when processing crafted video frames with extreme dimensions, leading to undersized buffer allocation.",
 		Severity:    format.RiskHigh,
@@ -241,6 +270,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2025-9951",
+		RCE:         true,
+		RCEScore:    9.0,
 		Title:       "Heap-buffer-overflow in JPEG2000 decoder (libavcodec)",
 		Description: "A heap-buffer-overflow write exists in jpeg2000dec in FFmpeg when processing crafted JPEG2000 codestreams with invalid decomposition level parameters.",
 		Severity:    format.RiskCritical,
@@ -251,6 +282,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2025-7700",
+		RCE:         true,
+		RCEScore:    8.0,
 		Title:       "ALS audio decoder memory corruption (libavcodec)",
 		Description: "A flaw in FFmpeg's ALS (MPEG-4 Audio Lossless) audio decoder where it does not properly validate decoded block lengths, leading to out-of-bounds access.",
 		Severity:    format.RiskHigh,
@@ -271,6 +304,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2025-22920",
+		RCE:         true,
+		RCEScore:    9.0,
 		Title:       "Heap buffer overflow in FFmpeg (libavcodec)",
 		Description: "A heap buffer overflow vulnerability in FFmpeg before commit 4bf784c, triggered by crafted media with invalid frame allocation sizes causing undersized buffer allocation.",
 		Severity:    format.RiskCritical,
@@ -291,6 +326,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2025-25473",
+		RCE:         true,
+		RCEScore:    8.0,
 		Title:       "Memory corruption in FFmpeg (libavcodec)",
 		Description: "Memory corruption vulnerability in FFmpeg git master before commit c08d30, triggered by crafted video frames with invalid reference picture parameters in video decoders.",
 		Severity:    format.RiskHigh,
@@ -301,6 +338,8 @@ var Signatures = []Signature{
 	},
 	{
 		CVE:         "CVE-2025-25469",
+		RCE:         true,
+		RCEScore:    8.0,
 		Title:       "Memory corruption via memory allocation (libavcodec)",
 		Description: "Memory corruption in FFmpeg git-master before commit d5873b due to improper memory allocation tracking when processing crafted media with invalid sample counts.",
 		Severity:    format.RiskHigh,
@@ -727,7 +766,7 @@ func checkJpeg2000Anomaly(fi *format.FormatInfo) []format.Anomaly {
 		found = append(found, format.Anomaly{
 			Severity:    format.RiskHigh,
 			Category:    "JPEG2000 Missing Dimensions",
-			Description: "Stream exists but no valid dimensions — potential crafted JPEG2000 codestream",
+			Description: "Stream exists but no valid dimensions 鈥?potential crafted JPEG2000 codestream",
 			CVE:         "CVE-2025-9951",
 		})
 	}
@@ -848,28 +887,28 @@ func checkMemoryAllocAnomaly(fi *format.FormatInfo) []format.Anomaly {
 }
 
 var VulnerableCodecs = map[string]VulnerableCodecInfo{
-	"rasc":    {CVE: "CVE-2026-12706", Name: "RASC (Raster Animation)", Severity: format.RiskCritical, Desc: "Use-after-free in RASC video decoder"},
-	"ras":     {CVE: "CVE-2026-12706", Name: "RASC (Raster Animation)", Severity: format.RiskCritical, Desc: "Use-after-free in RASC video decoder"},
-	"av01":    {CVE: "CVE-2026-40962", Name: "AV1 (libsvtav1)", Severity: format.RiskCritical, Desc: "Integer overflow in libsvtav1 encoding buffer sizing"},
-	"av1":     {CVE: "CVE-2026-40962", Name: "AV1 (libsvtav1)", Severity: format.RiskCritical, Desc: "Integer overflow in libsvtav1 encoding buffer sizing"},
-	"sanm":    {CVE: "CVE-2025-59734", Name: "SANM (ANIM Animation)", Severity: format.RiskCritical, Desc: "Use-after-free/OOB in SANM animation decoder"},
-	"anim":    {CVE: "CVE-2025-59734", Name: "SANM (ANIM Animation)", Severity: format.RiskCritical, Desc: "Use-after-free/OOB in SANM animation decoder"},
-	"rv60":    {CVE: "CVE-2025-69693", Name: "RealVideo 60", Severity: format.RiskHigh, Desc: "OOB read in RV60 slice parameter parsing"},
-	"rv40":    {CVE: "CVE-2025-69693", Name: "RealVideo 40", Severity: format.RiskHigh, Desc: "Potential OOB in RealVideo decoder"},
-	"rv30":    {CVE: "CVE-2025-69693", Name: "RealVideo 30", Severity: format.RiskHigh, Desc: "Potential OOB in RealVideo decoder"},
-	"dhav":    {CVE: "CVE-2025-59729", Name: "DHAV (Dahua Video)", Severity: format.RiskHigh, Desc: "Integer underflow in DHAV file header parsing"},
-	"j2k1":    {CVE: "CVE-2025-9951", Name: "JPEG 2000", Severity: format.RiskCritical, Desc: "Heap OOB write in JPEG2000 decomposition levels"},
-	"mjp2":    {CVE: "CVE-2025-9951", Name: "JPEG 2000", Severity: format.RiskCritical, Desc: "Heap OOB write in JPEG2000 decomposition levels"},
-	"jpeg":    {CVE: "CVE-2025-9951", Name: "JPEG/JPEG2000", Severity: format.RiskHigh, Desc: "Potential heap overflow in JPEG2000 decoder"},
-	"mjpg":    {CVE: "CVE-2025-9951", Name: "Motion JPEG", Severity: format.RiskHigh, Desc: "Potential heap overflow in JPEG2000 decoder"},
-	"als":     {CVE: "CVE-2025-7700", Name: "ALS (Audio Lossless)", Severity: format.RiskHigh, Desc: "ALS audio decoder block length OOB"},
-	"dnx":     {CVE: "CVE-2021-38114", Name: "DNxHD", Severity: format.RiskHigh, Desc: "Heap buffer overflow in DNxHD extradata"},
-	"cfhd":    {CVE: "CVE-2022-3966", Name: "CineForm HD", Severity: format.RiskMedium, Desc: "OOB read in CineForm HD plane dimensions"},
-	"exr":     {CVE: "CVE-2025-59731", Name: "OpenEXR", Severity: format.RiskCritical, Desc: "OOB write in OpenEXR DWAA/DWAB compression"},
-	"v_av1":   {CVE: "CVE-2026-40962", Name: "MKV AV1", Severity: format.RiskCritical, Desc: "Integer overflow in libsvtav1 encoding buffer sizing"},
-	"v_vp9":   {CVE: "CVE-2026-40962", Name: "MKV VP9", Severity: format.RiskHigh, Desc: "Potential overflow via large VP9 frames"},
-	"v_vp8":   {CVE: "CVE-2021-38291", Name: "MKV VP8", Severity: format.RiskHigh, Desc: "OOB read in image dimension computation"},
-	"a_als":   {CVE: "CVE-2025-7700", Name: "MKV ALS Audio", Severity: format.RiskHigh, Desc: "ALS audio decoder block length OOB"},
+	"rasc":    {CVE: "CVE-2026-12706", Name: "RASC (Raster Animation)", Severity: format.RiskCritical, Desc: "Use-after-free in RASC video decoder", SafeVer: "7.1"},
+	"ras":     {CVE: "CVE-2026-12706", Name: "RASC (Raster Animation)", Severity: format.RiskCritical, Desc: "Use-after-free in RASC video decoder", SafeVer: "7.1"},
+	"av01":    {CVE: "CVE-2026-40962", Name: "AV1 (libsvtav1)", Severity: format.RiskCritical, Desc: "Integer overflow in libsvtav1 encoding buffer sizing", SafeVer: "8.1"},
+	"av1":     {CVE: "CVE-2026-40962", Name: "AV1 (libsvtav1)", Severity: format.RiskCritical, Desc: "Integer overflow in libsvtav1 encoding buffer sizing", SafeVer: "8.1"},
+	"sanm":    {CVE: "CVE-2025-59734", Name: "SANM (ANIM Animation)", Severity: format.RiskCritical, Desc: "Use-after-free/OOB in SANM animation decoder", SafeVer: "7.1"},
+	"anim":    {CVE: "CVE-2025-59734", Name: "SANM (ANIM Animation)", Severity: format.RiskCritical, Desc: "Use-after-free/OOB in SANM animation decoder", SafeVer: "7.1"},
+	"rv60":    {CVE: "CVE-2025-69693", Name: "RealVideo 60", Severity: format.RiskHigh, Desc: "OOB read in RV60 slice parameter parsing", SafeVer: "8.0.2"},
+	"rv40":    {CVE: "CVE-2025-69693", Name: "RealVideo 40", Severity: format.RiskHigh, Desc: "Potential OOB in RealVideo decoder", SafeVer: "8.0.2"},
+	"rv30":    {CVE: "CVE-2025-69693", Name: "RealVideo 30", Severity: format.RiskHigh, Desc: "Potential OOB in RealVideo decoder", SafeVer: "8.0.2"},
+	"dhav":    {CVE: "CVE-2025-59729", Name: "DHAV (Dahua Video)", Severity: format.RiskHigh, Desc: "Integer underflow in DHAV file header parsing", SafeVer: "7.1"},
+	"j2k1":    {CVE: "CVE-2025-9951", Name: "JPEG 2000", Severity: format.RiskCritical, Desc: "Heap OOB write in JPEG2000 decomposition levels", SafeVer: "7.1"},
+	"mjp2":    {CVE: "CVE-2025-9951", Name: "JPEG 2000", Severity: format.RiskCritical, Desc: "Heap OOB write in JPEG2000 decomposition levels", SafeVer: "7.1"},
+	"jpeg":    {CVE: "CVE-2025-9951", Name: "JPEG/JPEG2000", Severity: format.RiskHigh, Desc: "Potential heap overflow in JPEG2000 decoder", SafeVer: "7.1"},
+	"mjpg":    {CVE: "CVE-2025-9951", Name: "Motion JPEG", Severity: format.RiskHigh, Desc: "Potential heap overflow in JPEG2000 decoder", SafeVer: "7.1"},
+	"als":     {CVE: "CVE-2025-7700", Name: "ALS (Audio Lossless)", Severity: format.RiskHigh, Desc: "ALS audio decoder block length OOB", SafeVer: "7.1"},
+	"dnx":     {CVE: "CVE-2021-38114", Name: "DNxHD", Severity: format.RiskHigh, Desc: "Heap buffer overflow in DNxHD extradata", SafeVer: "4.4.2"},
+	"cfhd":    {CVE: "CVE-2022-3966", Name: "CineForm HD", Severity: format.RiskMedium, Desc: "OOB read in CineForm HD plane dimensions", SafeVer: "5.1.3"},
+	"exr":     {CVE: "CVE-2025-59731", Name: "OpenEXR", Severity: format.RiskCritical, Desc: "OOB write in OpenEXR DWAA/DWAB compression", SafeVer: "7.1"},
+	"v_av1":   {CVE: "CVE-2026-40962", Name: "MKV AV1", Severity: format.RiskCritical, Desc: "Integer overflow in libsvtav1 encoding buffer sizing", SafeVer: "8.1"},
+	"v_vp9":   {CVE: "CVE-2026-40962", Name: "MKV VP9", Severity: format.RiskHigh, Desc: "Potential overflow via large VP9 frames", SafeVer: "8.1"},
+	"v_vp8":   {CVE: "CVE-2021-38291", Name: "MKV VP8", Severity: format.RiskHigh, Desc: "OOB read in image dimension computation", SafeVer: "4.4.2"},
+	"a_als":   {CVE: "CVE-2025-7700", Name: "MKV ALS Audio", Severity: format.RiskHigh, Desc: "ALS audio decoder block length OOB", SafeVer: "7.1"},
 }
 
 type VulnerableCodecInfo struct {
@@ -877,6 +916,7 @@ type VulnerableCodecInfo struct {
 	Name     string
 	Severity format.RiskLevel
 	Desc     string
+	SafeVer  string
 }
 
 func checkVulnerableCodecPresent(fi *format.FormatInfo) []format.Anomaly {
@@ -893,11 +933,19 @@ func checkVulnerableCodecPresent(fi *format.FormatInfo) []format.Anomaly {
 		lc := strings.ToLower(codec)
 		for prefix, info := range VulnerableCodecs {
 			if lc == prefix || strings.HasPrefix(lc, prefix) {
+				desc := fmt.Sprintf("Codec '%s' (%s) has known RCE risks — %s [%s]", codec, info.Name, info.Desc, info.CVE)
+				var safeVer string
+				if info.SafeVer != "" {
+					safeVer = info.SafeVer
+					desc += fmt.Sprintf(". Upgrade FFmpeg to >= %s to process safely", safeVer)
+				}
 				found = append(found, format.Anomaly{
 					Severity:    info.Severity,
 					Category:    fmt.Sprintf("Vulnerable Codec: %s", info.Name),
-					Description: fmt.Sprintf("Detected codec '%s' (%s) — %s [%s]", codec, info.Name, info.Desc, info.CVE),
+					Description: desc,
 					CVE:         info.CVE,
+					SafeVer:     safeVer,
+					RCE:         true,
 				})
 				break
 			}
@@ -943,3 +991,10 @@ func FormatSignaturesTable() string {
 	}
 	return table
 }
+
+
+
+
+
+
+

@@ -64,6 +64,11 @@ type Anomaly struct {
 	Category    string
 	Description string
 	CVE         string
+	AffectedVer string
+	FixedVer    string
+	SafeVer     string
+	RCE         bool
+	RCEScore    float64
 }
 
 type FormatInfo struct {

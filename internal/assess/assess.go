@@ -36,6 +36,40 @@ func Assess(fi *format.FormatInfo, path string, fileSize int64) *Report {
 			anomalySet[key] = true
 		}
 	}
+	cveVerMap := make(map[string]string)
+	cveAffectedMap := make(map[string]string)
+	cveRCEMap := make(map[string]bool)
+	cveScoreMap := make(map[string]float64)
+	for _, sig := range signatures.Signatures {
+		if sig.CVE != "" {
+			cveVerMap[sig.CVE] = sig.FixedVer
+			cveAffectedMap[sig.CVE] = sig.AffectedVer
+			cveRCEMap[sig.CVE] = sig.RCE
+			cveScoreMap[sig.CVE] = sig.RCEScore
+		}
+	}
+	for i := range allAnomalies {
+		if allAnomalies[i].FixedVer == "" {
+			if fv, ok := cveVerMap[allAnomalies[i].CVE]; ok {
+				allAnomalies[i].FixedVer = fv
+			}
+		}
+		if allAnomalies[i].AffectedVer == "" {
+			if av, ok := cveAffectedMap[allAnomalies[i].CVE]; ok {
+				allAnomalies[i].AffectedVer = av
+			}
+		}
+		if !allAnomalies[i].RCE {
+			if rce, ok := cveRCEMap[allAnomalies[i].CVE]; ok {
+				allAnomalies[i].RCE = rce
+			}
+		}
+		if allAnomalies[i].RCEScore == 0 {
+			if s, ok := cveScoreMap[allAnomalies[i].CVE]; ok {
+				allAnomalies[i].RCEScore = s
+			}
+		}
+	}
 	fi.Anomalies = allAnomalies
 	score := fi.Score()
 	risk := fi.HighestRisk()
@@ -61,7 +95,7 @@ func Assess(fi *format.FormatInfo, path string, fileSize int64) *Report {
 func (r *Report) String() string {
 	var b strings.Builder
 	b.WriteString(fmt.Sprintf("File:     %s\n", r.FilePath))
-		b.WriteString(fmt.Sprintf("Size:     %s\n", FormatSize(r.FileSize)))
+	b.WriteString(fmt.Sprintf("Size:     %s\n", FormatSize(r.FileSize)))
 	b.WriteString(fmt.Sprintf("Format:   %s\n", r.Format))
 	if r.FormatInfo.Width > 0 && r.FormatInfo.Height > 0 {
 		b.WriteString(fmt.Sprintf("Dims:     %dx%d\n", r.FormatInfo.Width, r.FormatInfo.Height))
@@ -90,8 +124,26 @@ func (r *Report) String() string {
 			if a.Offset > 0 {
 				offset = fmt.Sprintf(" @0x%x", a.Offset)
 			}
-			b.WriteString(fmt.Sprintf("%s %s%s%s\n", icon, a.Category, cve, offset))
-			b.WriteString(fmt.Sprintf("   %s\n", a.Description))
+			verTag := ""
+			if a.FixedVer != "" {
+				verTag = fmt.Sprintf(" (fixed in %s)", a.FixedVer)
+			} else if a.AffectedVer != "" {
+				verTag = fmt.Sprintf(" (affects %s)", a.AffectedVer)
+			}
+			if a.RCE {
+				scoreTag := ""
+				if a.RCEScore > 0 {
+					scoreTag = fmt.Sprintf(" [%.1f]", a.RCEScore)
+				}
+				b.WriteString(fmt.Sprintf("%s 🚨 RCE%s%s%s%s\n", icon, scoreTag, cve, offset, verTag))
+				b.WriteString(fmt.Sprintf("   affects: %s | %s\n", a.AffectedVer, a.Description))
+				if a.SafeVer != "" {
+					b.WriteString(fmt.Sprintf("   ⬆ Upgrade FFmpeg to >= %s for safe processing\n", a.SafeVer))
+				}
+			} else {
+				b.WriteString(fmt.Sprintf("%s %s%s%s%s\n", icon, a.Category, cve, offset, verTag))
+				b.WriteString(fmt.Sprintf("   %s\n", a.Description))
+			}
 			if i < len(r.Anomalies)-1 {
 				b.WriteString("\n")
 			}

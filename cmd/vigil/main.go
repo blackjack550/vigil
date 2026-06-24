@@ -14,7 +14,7 @@ import (
 	"github.com/vigil/vigil/internal/signatures"
 )
 
-const version = "0.1.0"
+const appVer = "0.1.0"
 
 type Config struct {
 	Clean      bool
@@ -34,7 +34,7 @@ func buildBanner() string {
 ║       Vigil v%s                    ║
 ║   Video Vulnerability Pre-Checker   ║
 ║   Silent. Safe. Symmetric Cleanup.  ║
-╚══════════════════════════════════════╝`, version)
+╚══════════════════════════════════════╝`, appVer)
 }
 
 func main() {
